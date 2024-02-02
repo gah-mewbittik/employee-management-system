@@ -1,3 +1,20 @@
+
+INSERT INTO department (id, department_name)
+VALUES (1, "Accounting"),
+       (2, "Legal"),
+       (4, "Engineering"),
+       (5, "Administration");
+
+INSERT INTO role (id, title, salary, department_id)
+VALUES (1, "Accounts Payable", 100000.00, 1),
+       (2, "Accounts Receivables", 100000.00, 1),
+       (3, "Lawyer", 250000.00, 2),
+       (4, "Engineer", 200000.00, 3),
+       (5, "Data Scientist", 180000.00 4),
+       (6, "Director", 300000.00 5),
+       (7, "Administrative Assistant", 50000.00 5);
+
+
 INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
 VALUES 
 (1, "Andrew", "Bean", 1, 3),
