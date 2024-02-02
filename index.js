@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
+//TODO: Rewrite the questions for validation
 // an array of questions for user input
 const questions = [
  
