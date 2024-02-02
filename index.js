@@ -13,8 +13,8 @@ const questions = [
     },
     {
         type:'input',
-        name:'username',
-        message: 'Enter your github username: ',
+        name:'departmentName',
+        message: 'Enter the name of the department: ',
         validate: (input) =>{  //checks if you entered a username
             if(!input.trim()){
                 return 'Please enter your Github username';
@@ -22,6 +22,78 @@ const questions = [
             return true;
             
         }
+    },
+    {
+        type:'input',
+        name:'roleName',
+        message: 'Enter the name of the role: ',
+        validate: (input) =>{  //checks if you entered a username
+            if(!input.trim()){
+                return 'Please enter your Github username';
+            }
+            return true;
+            
+        }
+    },
+    {
+        type:'input',
+        name:'salary',
+        message: 'Enter the salary for the role: ',
+        validate: (input) =>{  //checks if you entered a username
+            if(!input.trim()){
+                return 'Please enter your Github username';
+            }
+            return true;
+            
+        }
+    },
+    {
+        type:'list',
+        name:'roleBelong',
+        message: 'What department does the role belong too?',
+        choices: ['Accounting','Legal','Engineering','Administration', 'Sales']
+    },
+    {
+        type:'input',
+        name:'employeeFistName',
+        message: `What is the employee's first name? `,
+        validate: (input) =>{  //checks if you entered a username
+            if(!input.trim()){
+                return 'Please enter your Github username';
+            }
+            return true;
+            
+        }
+    },
+    {
+        type:'input',
+        name:'employeeLastName',
+        message: `What is the employee's last name? `,
+        validate: (input) =>{  //checks if you entered a username
+            if(!input.trim()){
+                return 'Please enter your Github username';
+            }
+            return true;
+            
+        }
+    },
+    {
+        type:'list',
+        name:'initialRole',
+        message: 'What is the employee role?',
+        choices: ['Accounts Payable','Accounts Receivables','Lawyer','Engineer', 'Data Scientist', 'Director', 'Administrative Assistant', 'Sales Rep']
+    },
+    {
+        type:'list',
+        name:'employeesUpdate',
+        message: `Which employee's role would you like to update?`,
+        choices: ['None', 'John Dow','Kyle Lu','Ashley Jones','Jane Bean', 'Will Earn', 'Andrew Bean']
+    },
+    {
+        type:'list',
+        name:'roleUpdate',
+        message: 'What role do you want to re-assign the selected employee?',
+        choices: ['Accounts Payable','Accounts Receivables','Lawyer','Engineer', 'Data Scientist', 'Director', 'Administrative Assistant', 'Sales Rep']
     }
 ];
 
