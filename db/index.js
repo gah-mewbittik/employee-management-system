@@ -6,6 +6,7 @@ const db = require('./connection');
 //TODO: Rewrite the questions for validation
 // an array of questions for user input
 
+// first question 
 const originalQuestion = () =>{
     inquirer.prompt([
         {
@@ -26,7 +27,7 @@ const originalQuestion = () =>{
         console.log(res.originalQuestion);
         switch(res.originalQuestion){
             case 'view all departments':
-                //
+                viewAllDepartments();
                 break;
             case 'view all roles':
                 // 
@@ -55,6 +56,19 @@ const originalQuestion = () =>{
         if(err)throw err;
     });
 }
+
+//Functions that perform the queries
+
+//View all departments function
+const viewAllDepartments = () =>{
+    let selection = "SELECT * FROM  department";
+    db.query(selection, function(err, res){
+        if(err) throw err;
+        console.table(res);
+        originalQuestion();
+    });
+}
+
 const questions = [
  
     ,
