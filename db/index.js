@@ -1,16 +1,63 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
+const db = require('./connection');
+
 //TODO: Rewrite the questions for validation
 // an array of questions for user input
+
+const originalQuestion = () =>{
+    inquirer.prompt([
+        {
+            type:'list',
+            name:'originalQuestion',
+            message: 'What would you like to do?',
+            choices: [
+                'view all departments',
+                'view all roles',
+                'view all employees',
+                'add a department', 
+                'add a role', 
+                'add an employee',
+                'update an employee role'
+            ]//Bonus ('view employees by department', 'view utilized budget by department', 'Delete an employee', 'Delete a role', 'Delete a department', 'Exit' )
+        }
+    ]).then((res) => {
+        console.log(res.originalQuestion);
+        switch(res.originalQuestion){
+            case 'view all departments':
+                //
+                break;
+            case 'view all roles':
+                // 
+                break;
+            case 'view all employees':
+                //
+                break;
+            case 'add a department':
+                //
+                break;
+            case 'add a role':
+                //
+                break;
+            case 'add an employee':
+                //
+                break;
+            case 'update an employee role':
+                //
+                break;
+            default:
+                console.log('Error');
+                db.end();
+                break;
+        }
+    }).catch((err) =>{
+        if(err)throw err;
+    });
+}
 const questions = [
  
-    {
-        type:'list',
-        name:'wantToDo',
-        message: 'What would you like to do?',
-        choices: ['view all departments','view all roles','view all employees','add a department', 'add a role', 'add an employee','update an employee role']
-    },
+    ,
     {
         type:'input',
         name:'departmentName',
