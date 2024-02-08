@@ -30,13 +30,13 @@ const originalQuestion = () =>{
                 viewAllDepartments();
                 break;
             case 'view all roles':
-                // 
+                viewAllRoles();
                 break;
             case 'view all employees':
-                //
+                viewAllEmployees();
                 break;
             case 'add a department':
-                //
+                addDepartment();
                 break;
             case 'add a role':
                 //
@@ -69,28 +69,65 @@ const viewAllDepartments = () =>{
     });
 }
 
+//View all roles function
+const viewAllRoles = () => {
+    let selection = "SELECT * FROM role";
+    db.query(selection, function(err, res){
+        if(err) throw err;
+        console.table(res);
+        originalQuestion();
+    });
+}
+
+//View all employees function
+const viewAllEmployees = () => {     // TODO: ReVIEW this!
+    let selection = "SELECT * FROM employee";
+    db.query(selection, function(err, res){
+        if(err) throw err;
+        console.table(res);
+        originalQuestion();
+    });
+}
+
+//Add a department function
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            type:'input',
+            name:'departmentName',
+            message: 'Enter the name of the department: ',
+            validate: (input) =>{  //checks if you entered a username
+                if(!input.trim()){
+                    return 'Please enter the name of the department.';
+                }
+                return true;
+                
+            }
+        }
+    ]).then((res) => {
+        let insert = "INSERT INTO department SET ?";
+        db.query(insert, {name: res.departmentName},(err, res) => {
+            if(err) throw err;
+            console.log(`Successfully Added the ${res.departmentName} Department`);
+            originalQuestion();
+        });
+    })
+}
+
+//Add Role function
+const addRole = () => {
+
+}
+
 const questions = [
  
-    ,
-    {
-        type:'input',
-        name:'departmentName',
-        message: 'Enter the name of the department: ',
-        validate: (input) =>{  //checks if you entered a username
-            if(!input.trim()){
-                return 'Please enter your Github username';
-            }
-            return true;
-            
-        }
-    },
     {
         type:'input',
         name:'roleName',
         message: 'Enter the name of the role: ',
         validate: (input) =>{  //checks if you entered a username
             if(!input.trim()){
-                return 'Please enter your Github username';
+                return 'Please enter the name of the role';
             }
             return true;
             
@@ -158,28 +195,3 @@ const questions = [
     }
 ];
 
-// function to write README file
-function writeToFile(fileName, data) {
-        
-        fileName = `${data.title.toLowerCase().split(' ').join('')}.sql`;
-    
-        fs.writeFile(fileName, genMarkDown(data), (err) => {
-        err ? console.log(err) : console.log('Success!')
-        });
-}
-
-// function to initialize app
-function init() {
-    inquirer.prompt(questions)
-    .then((data) => {
-    
-        writeToFile('README.md', data);
-    })
-    .catch((error) => {
-        console.error(error.message);
-
-    });
-}
-
-// Function call to initialize app
-init();

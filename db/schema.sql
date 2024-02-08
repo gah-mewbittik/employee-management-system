@@ -1,4 +1,4 @@
--- Write your Schema Here -- 
+
 DROP DATABASE IF EXISTS myEmployeeList_db;
 CREATE DATABASE myEmployeeList_db;
 
@@ -6,7 +6,7 @@ USE myEmployeeList_db;
 
 CREATE TABLE department (
   id INT,
-  department_name VARCHAR(30),
+  name VARCHAR(30),
     PRIMARY KEY (id)
 );
 
