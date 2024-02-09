@@ -120,7 +120,6 @@ const getDepartments = () =>{
             if(err){
                 reject(err);
             }else{
-                //resolve(results.map((result) => result.name));
                 resolve(results);
             }
         })
@@ -183,10 +182,23 @@ const addRole = () => {
     });
 }
 
+//Get departments function
+const getRoles = () =>{
+    return new Promise((resolve, reject) =>{
+        db.query("SELECT * FROM role", (err, results) =>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(results);
+            }
+        })
+    })
+}
 
-//Add Employee function TODO: Finish the below function
+//Add Employee function TODO: Finish the below function //FIX NULL for Role_id & Manager_id
 const addEmployee = () => {
-
+    getRoles()
+    .then((roles) =>{ 
     inquirer.prompt([
         {
             type:'input',
@@ -216,11 +228,27 @@ const addEmployee = () => {
             type:'list',
             name:'initialRole',
             message: 'What is the employee role?',
-            choices: ['Accounts Payable','Accounts Receivables','Lawyer','Research','Engineer', 'Data Scientist', 'Director', 'Administrative Assistant', 'Sales Rep']
+            choices: roles.map((role) => role.title)
         }
     ]).then((res) => {
-        //Add here!
-    })
+        let employeeFirstName = res.employeeFirstName;
+        let employeeLastName = res.employeeLastName;
+        let roleId = roles.find((role) => role.role_id === res.initialRole)?.id;
+        let insertQuery = "INSERT INTO employee SET ?";
+        db.query(insertQuery,{
+            first_name: res.employeeFistName,
+            last_name: res.employeeLastName,
+            role_id: roleId
+        },(err, res) =>{
+            if(err){
+                console.error(err);
+                throw err};
+            
+            console.log(`Successfully added ${employeeFirstName} ${employeeLastName} employee`);
+            originalQuestion();
+        });
+    });
+});
 }
 
 //Update Employee role function TODO: Finish the below function
