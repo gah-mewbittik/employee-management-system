@@ -102,10 +102,10 @@ const addDepartment = () => {
                 
             }
         }
-    ]).then((res) => {
+    ]).then((res) => { // inserts new department  in to department Table
         let departmentName = res.departmentName;
-        let insert = "INSERT INTO department SET ?";
-        db.query(insert, {name: res.departmentName},(err, res) => {
+        let insertQuery = "INSERT INTO department SET ?";
+        db.query(insertQuery, {name: res.departmentName},(err, res) => {
             if(err) throw err;
             console.log(`Successfully Added the ${departmentName} Department`);
             originalQuestion();
@@ -113,8 +113,24 @@ const addDepartment = () => {
     })
 }
 
-//Add Role function TODO: Finish the below function
+//Get departments function
+const getDepartments = () =>{
+    return new Promise((resolve, reject) =>{
+        db.query("SELECT * FROM department", (err, results) =>{
+            if(err){
+                reject(err);
+            }else{
+                //resolve(results.map((result) => result.name));
+                resolve(results);
+            }
+        })
+    })
+}
+
+//Add Role function 
 const addRole = () => {
+    getDepartments()
+    .then((departments) => {
     inquirer.prompt([
         {
             type:'input',
@@ -134,7 +150,7 @@ const addRole = () => {
             message: 'Enter the salary for the role: ',
             validate: (input) =>{  //checks if you entered a salary
                 if(!input.trim()){
-                    return 'Please enter your Github username';
+                    return 'Please enter the Salary for the role';
                 }
                 return true;
                 
@@ -144,20 +160,33 @@ const addRole = () => {
             type:'list',
             name:'roleDepartment',
             message: 'What department does the role belong too?',
-            choices: ['Accounting',
-            'Legal',
-            'Research',
-            'Engineering',
-            'Administration', 
-            'Sales']
+            choices: departments
+            
         }
-    ]).then((res) => {
-        ///Add here!
-    })
+    ]).then((res) => { // Adds input from user to create the new role in the role table
+        let newRole = res.roleName;
+        let departmentId = departments.find((department) => department.name === res.roleDepartment)?.id;
+        let insertQuery = "INSERT INTO ROLE SET ?";
+        db.query(insertQuery,{
+            title: res.roleName,
+            salary: res.salary,
+            department_id: departmentId
+        },(err, res) =>{
+            if(err){
+                console.error(err);
+                throw err};
+            
+            console.log(`Successfully added the ${newRole} role`);
+            originalQuestion();
+        });
+        }); 
+    });
 }
+
 
 //Add Employee function TODO: Finish the below function
 const addEmployee = () => {
+
     inquirer.prompt([
         {
             type:'input',
@@ -165,7 +194,7 @@ const addEmployee = () => {
             message: `What is the employee's first name? `,
             validate: (input) =>{  //checks if you entered a name
                 if(!input.trim()){
-                    return 'Please enter your Github username';
+                    return 'Please enter the first name of the employee';
                 }
                 return true;
                 
@@ -177,7 +206,7 @@ const addEmployee = () => {
             message: `What is the employee's last name? `,
             validate: (input) =>{  //checks if you entered a name
                 if(!input.trim()){
-                    return 'Please enter your Github username';
+                    return 'Please enter the last name of the employee';
                 }
                 return true;
                 
