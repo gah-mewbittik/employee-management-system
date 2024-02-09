@@ -78,7 +78,7 @@ const viewAllRoles = () => {
 }
 
 //View all employees function
-const viewAllEmployees = () => {     // TODO: ReVIEW this!
+const viewAllEmployees = () => {     
     let selection = "SELECT * FROM employee";
     db.query(selection, function(err, res){
         if(err) throw err;
@@ -103,10 +103,11 @@ const addDepartment = () => {
             }
         }
     ]).then((res) => {
+        let departmentName = res.departmentName;
         let insert = "INSERT INTO department SET ?";
         db.query(insert, {name: res.departmentName},(err, res) => {
             if(err) throw err;
-            console.log(`Successfully Added the ${res.departmentName} Department`);
+            console.log(`Successfully Added the ${departmentName} Department`);
             originalQuestion();
         });
     })
