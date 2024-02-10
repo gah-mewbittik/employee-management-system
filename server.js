@@ -239,6 +239,7 @@ const addEmployee = () => {
     .then((roles) =>{ 
        getDirectors((directorNames) => {
         getEmployees().then((employees) => {
+            directorNames.unshift('NONE');
     inquirer.prompt([
         {
             type:'input',
