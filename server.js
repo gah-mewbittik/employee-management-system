@@ -4,7 +4,7 @@ const db = require('./db/connection');
 
 
 
-// first question 
+// first question that shows all the options
 const originalQuestion = () =>{
     inquirer.prompt([
         {
@@ -18,8 +18,10 @@ const originalQuestion = () =>{
                 'add a department', 
                 'add a role', 
                 'add an employee',
-                'update an employee role'
-            ]//Bonus ('view employees by department', 'view utilized budget by department', 'Delete an employee', 'Delete a role', 'Delete a department', 'Exit' )
+                'update an employee role',
+                'EXIT'
+            ],//Bonus ('view employees by department', 'view utilized budget by department', 'Delete an employee', 'Delete a role', 'Delete a department', 'Exit' )
+            loop: false
         }
     ]).then((res) => {
         console.log(res.originalQuestion);
@@ -44,6 +46,9 @@ const originalQuestion = () =>{
                 break;
             case 'update an employee role':
                 updateEmployeeRole();
+                break;
+            case 'EXIT':
+                db.end();
                 break;
             default:
                 console.log('Error');
@@ -159,7 +164,8 @@ const addRole = () => {
             type:'list',
             name:'roleDepartment',
             message: 'What department does the role belong too?',
-            choices: departments
+            choices: departments,
+            loop: false
             
         }
     ]).then((res) => { // Adds input from user to create the new role in the role table
@@ -258,15 +264,17 @@ const addEmployee = () => {
             type:'list',
             name:'initialRole',
             message: 'What is the employee role?',
-            choices: roles.map((role) => role.title)
+            choices: roles.map((role) => role.title), //accessing role titles
+            loop: false
         },
         {
             type:'list',
             name:'employeesManager',
             message: 'Who will manage this employee?',
-            choices: directorNames
+            choices: directorNames, //gets employee list
+            loop: false
         }
-    ]).then((res) => {
+    ]).then((res) => { // functionality that handles functions questions and responses
         let employeeFirstName = res.employeeFirstName;
         let employeeLastName = res.employeeLastName;
         let roleId = roles.find((role) => role.title === res.initialRole)?.id;
@@ -291,7 +299,7 @@ const addEmployee = () => {
 });
 }
 
-//Update Employee role function TODO: Finish the below function
+//Update Employee role function
 const updateEmployeeRole = () =>{
     getEmployees().then((employees) => {
         getRoles().then((roles) => {
@@ -301,21 +309,24 @@ const updateEmployeeRole = () =>{
             type:'list',
             name:'employeesUpdate',
             message: `Which employee's role would you like to update?`,
-            choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`)
+            choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`), //employee first & and last name
+            loop: false
         },
         {
             type:'list',
             name:'roleUpdate',
             message: 'What role do you want to re-assign the selected employee?',
-            choices: roles.map((role) => role.title)
+            choices: roles.map((role) => role.title), //list of roles
+            loop: false
         },
         {
             type:'list',
             name:'managerUpdate',
             message: 'Who is the new manager for this employee?',
-            choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`)
+            choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`), //list of employees 
+            loop: false
         }
-    ]).then((res) => {
+    ]).then((res) => { // functionality that handles functions questions and responses
         let roleId = roles.find((role) => role.title === res.roleUpdate)?.id;
         let employeeName = res.employeesUpdate;
         let managerName = res.managerUpdate;
