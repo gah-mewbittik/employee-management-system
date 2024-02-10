@@ -195,14 +195,44 @@ const getRoles = () =>{
     })
 }
 
+//Get the Names of the Directors
+const getDirectors = (callback) =>{
+    db.query("SELECT first_name, last_name FROM employee WHERE role_id IN (SELECT role_id FROM role WHERE title = 'Director')",
+    (err, results) => {
+        if(err){
+            console.log(err);
+            throw err;
+    }
+        const directorNames = results.map((employee) => `${employee.first_name} ${employee.last_name}`);
+        callback(directorNames);
+    }
+    );
+};
+
+//Get Employees function
+const getEmployees = () => {
+    return new Promise((resolve, reject) => {
+        db.query("SELECT * FROM employee", (err, results) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+
 //Add Employee function TODO: Finish the below function //FIX NULL for Role_id & Manager_id
 const addEmployee = () => {
     getRoles()
     .then((roles) =>{ 
+       getDirectors((directorNames) => {
+        getEmployees().then((employees) => {
     inquirer.prompt([
         {
             type:'input',
-            name:'employeeFistName',
+            name:'employeeFirstName',
             message: `What is the employee's first name? `,
             validate: (input) =>{  //checks if you entered a name
                 if(!input.trim()){
@@ -229,25 +259,35 @@ const addEmployee = () => {
             name:'initialRole',
             message: 'What is the employee role?',
             choices: roles.map((role) => role.title)
+        },
+        {
+            type:'list',
+            name:'employeesManager',
+            message: 'Who will manage this employee?',
+            choices: directorNames
         }
     ]).then((res) => {
         let employeeFirstName = res.employeeFirstName;
         let employeeLastName = res.employeeLastName;
-        let roleId = roles.find((role) => role.role_id === res.initialRole)?.id;
+        let roleId = roles.find((role) => role.title === res.initialRole)?.id;
+        let managerId = employees.find((employee) => `${employee.first_name} ${employee.last_name}` === res.employeesManager)?.id;
         let insertQuery = "INSERT INTO employee SET ?";
         db.query(insertQuery,{
-            first_name: res.employeeFistName,
+            first_name: res.employeeFirstName,
             last_name: res.employeeLastName,
-            role_id: roleId
+            role_id: roleId,
+            manager_id: managerId
         },(err, res) =>{
             if(err){
                 console.error(err);
                 throw err};
             
-            console.log(`Successfully added ${employeeFirstName} ${employeeLastName} employee`);
+            console.log(`Successfully added employee ${employeeFirstName} ${employeeLastName} `);
             originalQuestion();
         });
     });
+    });
+});
 });
 }
 
