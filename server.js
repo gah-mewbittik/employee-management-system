@@ -19,8 +19,9 @@ const originalQuestion = () =>{
                 'add a role', 
                 'add an employee',
                 'update an employee role',
+                'Delete an employee',
                 'EXIT'
-            ],//Bonus ('view employees by department', 'view utilized budget by department', 'Delete an employee', 'Delete a role', 'Delete a department', 'Exit' )
+            ],//Bonus ('view employees by department', 'view utilized budget by department', 'Delete an employee', 'Delete a role', , 'Exit' )
             loop: false
         }
     ]).then((res) => {
@@ -46,6 +47,9 @@ const originalQuestion = () =>{
                 break;
             case 'update an employee role':
                 updateEmployeeRole();
+                break;
+            case 'Delete an employee':
+                deleteEmployee();
                 break;
             case 'EXIT':
                 db.end();
@@ -339,8 +343,8 @@ const updateEmployeeRole = () =>{
         === managerLastName)?.id, firstName, lastName],(err, res) =>{
             if(err){
                 console.error(err);
-                throw err};
-            
+                throw err;
+            }
             console.log(`Successfully updated ${employeeName}'s role `);
             originalQuestion();
         });
@@ -348,6 +352,36 @@ const updateEmployeeRole = () =>{
 })
 })
 })
+}
+
+//DELETE Department function
+const deleteEmployee = () =>{
+    getEmployees().then((employees) =>{
+        inquirer.prompt([
+            {
+                type:'list',
+                name:'deleteEmployee',
+                message: `Delete which Employee?`,
+                choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`), //employee first & and last name
+                loop: false
+            }
+        ]).then((res) => {
+            let deleteQuery = "DELETE FROM employee WHERE first_name = ? AND last_name = ?";
+            let employeeName = res.deleteEmployee;
+
+            let [firstName, lastName] = employeeName.split(' ');
+
+            db.query(deleteQuery, [firstName, lastName], (err, res) =>{
+                if(err){
+                    console.log(err);
+                    throw err;
+                }else{
+                    console.log(`Successfully deleted employee ${employeeName}.`);
+                    originalQuestion();
+                }
+            })
+        })
+    })
 }
 
 originalQuestion();
