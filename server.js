@@ -223,7 +223,7 @@ const getEmployees = () => {
 }
 
 
-//Add Employee function TODO: Finish the below function //FIX NULL for Role_id & Manager_id
+//Add Employee function 
 const addEmployee = () => {
     getRoles()
     .then((roles) =>{ 
@@ -293,22 +293,50 @@ const addEmployee = () => {
 
 //Update Employee role function TODO: Finish the below function
 const updateEmployeeRole = () =>{
+    getEmployees().then((employees) => {
+        getRoles().then((roles) => {
+            getDirectors((directorNames) => {
     inquirer.prompt([
         {
             type:'list',
             name:'employeesUpdate',
             message: `Which employee's role would you like to update?`,
-            choices: ['None', 'John Dow','Kyle Lu','Ashley Jones','Jane Bean', 'Will Earn', 'Andrew Bean']
+            choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`)
         },
         {
             type:'list',
             name:'roleUpdate',
             message: 'What role do you want to re-assign the selected employee?',
-            choices: ['Accounts Payable','Accounts Receivables','Lawyer','Research','Engineer', 'Data Scientist', 'Director', 'Administrative Assistant', 'Sales Rep']
+            choices: roles.map((role) => role.title)
+        },
+        {
+            type:'list',
+            name:'managerUpdate',
+            message: 'Who is the new manager for this employee?',
+            choices: employees.map((employee) => `${employee.first_name} ${employee.last_name}`)
         }
     ]).then((res) => {
-        //add here
+        let roleId = roles.find((role) => role.title === res.roleUpdate)?.id;
+        let employeeName = res.employeesUpdate;
+        let managerName = res.managerUpdate;
+
+        let [firstName, lastName] = employeeName.split(' ');
+        let [managerFirstName, managerLastName] = managerName.split(' ');
+        
+        let updateQuery = "UPDATE employee SET role_id = ?, manager_id = ? WHERE first_name = ?";
+        db.query(updateQuery, [roleId, employees.find((employee) => employee.first_name === managerFirstName && employee.last_name
+        === managerLastName)?.id, firstName, lastName],(err, res) =>{
+            if(err){
+                console.error(err);
+                throw err};
+            
+            console.log(`Successfully updated ${employeeName}'s role `);
+            originalQuestion();
+        });
     })
+})
+})
+})
 }
 
 originalQuestion();
