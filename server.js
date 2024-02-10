@@ -309,6 +309,7 @@ const updateEmployeeRole = () =>{
     getEmployees().then((employees) => {
         getRoles().then((roles) => {
             getDirectors((directorNames) => {
+              
     inquirer.prompt([
         {
             type:'list',
